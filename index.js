@@ -13,8 +13,7 @@ app.get("/", (req, res) => {
   res.send("Service Review Server Running");
 });
 
-const uri =
-  "mongodb+srv://e-commerce-web:XHOhPWIrH44oP0th@cluster0.zfaesfn.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.zfaesfn.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
