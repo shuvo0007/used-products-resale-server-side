@@ -22,46 +22,70 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    const userCollection = client.db("e-commerce").collection("laptop");
+    const laptopCollection = client.db("e-commerce").collection("laptop");
+    const userCollection = client.db("e-commerce").collection("users");
+    const selectedLaptop = client
+      .db("e-commerce")
+      .collection("selected-laptop");
+
+    // --------------------------------------------------all laptop collection--------------------------------------------------------
+
     app.get("/laptop", async (req, res) => {
       const query = {};
-      const cursor = userCollection.find(query);
+      const cursor = laptopCollection.find(query);
       const category = await cursor.toArray();
       res.send(category);
     });
+
     app.post("/laptop", async (req, res) => {
       const category = req.body;
-      const allCategory = await userCollection.insertOne(category);
+      const allCategory = await laptopCollection.insertOne(category);
       res.send(allCategory);
     });
-    app.get("/laptop/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: ObjectId(id) };
-      const laptop = await userCollection.findOne(query);
-      res.send(laptop);
-    });
+
     app.put("/laptop/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
-      const laptop = req.body;
       const option = { upset: true };
       const updateLaptop = {
         $set: {
-          advertised: laptop.advertised,
+          advertised: true,
         },
       };
-      const result = await userCollection.updateOne(
+      const result = await laptopCollection.updateOne(
         filter,
         updateLaptop,
         option
       );
       res.send(result);
     });
+
     app.delete("/laptop/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
-      const result = await userCollection.deleteOne(query);
+      const result = await laptopCollection.deleteOne(query);
       res.send(result);
+    });
+
+    // --------------------------------------------------all laptop wishlisted--------------------------------------------------------
+
+    app.get("/selected-laptop", async (req, res) => {
+      const query = {};
+      const cursor = selectedLaptop.find(query);
+      const allSelected = await cursor.toArray();
+      res.send(allSelected);
+    });
+    app.post("/selected-laptop", async (req, res) => {
+      const category = req.body;
+      const allSelected = await selectedLaptop.insertOne(category);
+      res.send(allSelected);
+    });
+
+    app.get("/laptop/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const laptop = await laptopCollection.findOne(query);
+      res.send(laptop);
     });
   } finally {
   }
