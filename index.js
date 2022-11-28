@@ -5,6 +5,7 @@ const port = process.env.PORT || 5000;
 const { ObjectID, ObjectId } = require("bson");
 require("dotenv").config();
 const { MongoClient, ServerApiVersion } = require("mongodb");
+const { request } = require("express");
 
 app.use(cors());
 app.use(express.json());
@@ -39,17 +40,21 @@ async function run() {
 
     app.post("/laptop", async (req, res) => {
       const category = req.body;
+
       const allCategory = await laptopCollection.insertOne(category);
       res.send(allCategory);
     });
 
     app.put("/laptop/:id", async (req, res) => {
-      const id = req.params.id;
+      const id = req.body.id;
+      console.log(req.body);
+      const isPaid = req.body.isPaid;
       const filter = { _id: ObjectId(id) };
       const option = { upset: true };
       const updateLaptop = {
         $set: {
           advertised: true,
+          paid: isPaid ? true : false,
         },
       };
       const result = await laptopCollection.updateOne(
