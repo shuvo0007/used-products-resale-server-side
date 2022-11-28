@@ -73,7 +73,6 @@ async function run() {
     });
 
     // --------------------------------------------------all laptop wishlisted--------------------------------------------------------
-
     app.get("/selected-laptop", async (req, res) => {
       const query = {};
       const cursor = selectedLaptop.find(query);
